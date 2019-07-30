@@ -36,6 +36,9 @@ def moveTo(x, y):
     pyautogui.keyDown('w')
 
     while True:
+        print(isfloat(coordinates[0]), coordinates[0])
+        print(isfloat(coordinates[1]), coordinates[1])
+
         if isfloat(coordinates[0]) and isfloat(coordinates[1]):
             print(coordinates[0], coordinates[1])
             moveToDestination(coordinates[0], coordinates[1], x, y)
@@ -49,7 +52,7 @@ def destinationReached(x, y, destinationX, destinationY):
 def isfloat(value):
     try:
         float(value)
-        return True
+        return value.replace('.', '').replace('-', '').replace('[', '').isdigit() and len(value) == 5
     except ValueError:
         return False
 
