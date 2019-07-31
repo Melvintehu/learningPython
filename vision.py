@@ -60,7 +60,8 @@ def moveTo(desX, desY):
     while True:
         print(coordinates)
         pyautogui.keyDown('w')   
-        
+   
+   
         if coordinates[0] != '' and coordinates[1] != '':
             moveToDestination(desX, desY, coordinates[0], coordinates[1])
 
@@ -82,27 +83,25 @@ def moveToDestination(desX, desY, x, y):
 
     # dx /= length
     # dy /= length
-    print(oldDX, oldDY, oldLength)
-    print(dx, dy, length)
 
-    if(oldDX > dx or oldDY > dy or oldLength > length or dx < 0 or dy < 0 or length < 0):
+
+    if(oldLength < length or (oldDX < dx and dx > 0) or (oldDY < dy and dy > 0)):
         width, height = pyautogui.size()
         print(width, height)
         pyautogui.moveTo(width/2, height/2)
-        pyautogui.dragTo(width/2 + 10, height/2 - 45, 0.5, button='right')
+        pyautogui.drag(10, -43, 1, button='right')
     
 
     oldDX = dx
     oldDY = dy
     oldLength = length
 
-    # the length must always got to zero.
-
-
-
-
-
-
 time.sleep(4)
 moveTo(49.99, 49.99)
+
+
+
+
+
+
 
