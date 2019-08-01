@@ -18,6 +18,7 @@ oldDY = 0
 oldLength = 0
 
 def makeCoordinateImage():
+    #coordinates voor thuis laptop: 0, 34, 180, 25
     coordinateImg = pyautogui.screenshot(region=(0, 34, 180, 25))
     coordinateImg.save(r"C:/Users/Melvi/Desktop/shadowbot/coordinates.png")
     return coordinateImg
@@ -71,14 +72,12 @@ def moveTo(desX, desY):
         if coordinates[0] != '' and coordinates[1] != '':
             moveToDestination(desX, desY, coordinates[0], coordinates[1])
 
-        
-        
         if inRangeOfDestination(desX, desY, coordinates[0], coordinates[1]):
             pyautogui.keyDown('w')
-        
+
         coordinates = getCurrentCoordinates()
-        
-    
+
+    pyautogui.keyDown('w')
 
 
 def inRangeOfDestination(desX, desY, x, y):
