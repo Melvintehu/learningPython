@@ -126,8 +126,10 @@ time.sleep(4)
 moveTo(30.07, 35.75)
 
 
-
-
-
-
+# if x is increasing and y is decreasing direction = top right of the map
+# if x is increasing and y is increasing direction = bottom right of the map
+# if x is decreasing and y is decreasing direction = top left of the map
+# if x is decreasing and y is increasing direction = bottom left of the map
+# find out in what direction the destination is and use that to move the player to the left or right
+# use the green/yellow circles on the minimap to check if a node is present in the target location
 
