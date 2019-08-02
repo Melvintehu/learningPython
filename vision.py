@@ -151,6 +151,8 @@ def moveToDestination(desX, desY, x, y):
         # click the correct mouse button
         
         mouse.press(Button.right)
+
+        
       
         # TODO: when destination is very close, change the direction less
         amountOfPixelsToTurn = 20
