@@ -3,20 +3,19 @@ import time
 from pynput.mouse import Button, Controller
 from pynput.keyboard import Key, Controller as KeyController
 from pynput.mouse import Listener
-
+import pyscreenshot as ImageGrab
 mouse = Controller()
 
 
 
 player = Player()
-time.sleep(1)
+# time.sleep(1)
   
-player.moveTo(54.38, 36.11)
-player.moveTo(37.12, 24.64)
-player.moveTo(15.45, 31.64)
-player.moveTo(11.95, 47.20)
-player.moveTo(32.45, 62.18)
-player.moveTo(71.31, 34.13)
-
-
+# player.moveTo(51.78, 27.97)
+position = player.findOre()
+mousePosition = mouse.position
+mouse.position = (position[0], position[1])
+mouse.click(Button.right)
+time.sleep(2)
+mouse.click(Button.right)
 

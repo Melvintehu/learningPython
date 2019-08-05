@@ -5,9 +5,15 @@ import math
 import numpy as np
 from pynput.mouse import Button, Controller
 from pynput.keyboard import Key, Controller as KeyController
+try:
+    from PIL import Image
+except ImportError:
+    import Image
+from skimage.morphology import opening
+from skimage.morphology import disk
 
 # custom classes
-from ScreenCoordinates import ScreenCoordinates
+from Screen import Screen
 
 class Player:
     
@@ -20,111 +26,45 @@ class Player:
     y = 0
 
     def __init__(self):
-        self.screenCoordinates = ScreenCoordinates()
-        self.getPosition()
+        self.screen = Screen()
+        # self.getPosition()
 
     def getPosition(self):
         self.oldX = self.x
         self.oldY = self.y
         
-        coordinates = self.screenCoordinates.getScreenCoordinates()
+        coordinates = self.screen.getScreenCoordinates()
         self.x = coordinates[0]
         self.y = coordinates[1]
     
-   
+    def getRotation(self):
+        return self.screen.getScreenRotation()
 
-
-    def rotate(self, desX, desY):   
-        
-        self.rotateRecursive(desX, desY)
-
-        self.mouse.release(Button.right)
-
-    def rotateRecursive(self, desX, desY):
-        self.mouse.press(Button.right)
-        angle = self.getAngle(desX, desY)
-        if(angle < 5):
-            return
-
-        if angle > 180:
-            self.rotateDegrees(abs(angle - 360), 0.01, -1)
-        else:
-            self.rotateDegrees(angle, 0.01)   
-        self.mouse.release(Button.right)
-        self.rotateRecursive(desX, desY)    
-        print('rotating recursive')
-   
+    def getRotationToTarget(self, desX, desY):
+        AN = self.getRotation()
+        AD = self.getAngle(desX, desY)
+        print(AN, AD)
+        exit()
+        return AD - (360 - AN) 
+    
 
     def moveTo(self, desX, desY):
-        # STAGE 1:
-        # turn the player to atleast face the direction of the target coordinates
-        print('Stage 1: Shadowbot is trying to face the player to the right direction')
+        AN = self.getRotationToTarget(desX, desY)
         
-        self.rotate(desX, desY)
-        
-       
-        print('Stage 2: shadowbot is flying to the destination.')
-        #stage 4: fly to your destination
-        # fly to the destination and stop at the exact destination
-        self.keyboard.press('w')
-
-        while not(self.inLandingArea(desX, desY)):
-            self.getPosition()
-            
-            if self.inLandingArea(desX, desY):
-                print('in landing area')
-                self.keyboard.release('w')
-                break
-        
-        self.keyboard.release('w')
-
-
-        self.rotate(desX, desY)
-
-
-        self.keyboard.press('w')
-
-        while not(self.onTopOfDestination(desX, desY)):
-            self.getPosition()
-            
-            if self.onTopOfDestination(desX, desY):
-                print('in landing area')
-                self.keyboard.release('w')
-                break
-        
-        self.keyboard.release('w')
 
 
     def rotateDegrees(self, angleInDegrees, turnSpeed = 0.05, direction = 1):
-        # pixelsToTurn = (1600 / (360 * (np.pi/180))) * angleInDegrees * (np.pi/180)
-        pixelsToTurn = (1600 / 360) *  angleInDegrees
-        print(math.floor(pixelsToTurn))
-        pixelsToTurn = math.floor(pixelsToTurn)
-
         self.mouse.press(Button.right)
 
-        for i in range(pixelsToTurn):
+        for i in range(math.floor((1600 / 360) *  angleInDegrees)):
             time.sleep(turnSpeed)
             self.mouse.move(direction * 1, 0)            
         self.mouse.release(Button.right) 
 
-    def turnDegrees(self, angleInDegrees, turnSpeed = 0.05, direction = 1):
-        pixelsToTurn = (1567 / 360) *  angleInDegrees
-        print(math.floor(pixelsToTurn))
-        pixelsToTurn = math.floor(pixelsToTurn)
-
-        self.mouse.press(Button.right)
-
-        for i in range(pixelsToTurn):
-            time.sleep(turnSpeed)
-            self.mouse.move(direction * 1, 0)            
-        self.mouse.release(Button.right)            
-        
-
     def getAngle(self, desX, desY):
         self.getPosition()
         self.keyboard.press('s')
-        time.sleep(1)
+        time.sleep(1.5)
         self.keyboard.release('s')    
         self.getPosition()
 
@@ -136,17 +76,81 @@ class Player:
         ang = math.degrees(math.atan2(c[1]-b[1], c[0]-b[0]) - math.atan2(a[1]-b[1], a[0]-b[0]))
         return ang + 360 if ang < 0 else ang
 
-    def inLandingArea(self, desX, desY):
+    def inLandingArea(self, desX, desY, marginX, marginY):
         if desX != '' and desY != '' and self.x != '' and self.y != '':
-            return abs(desX - self.x) <= 5 and abs(desY - self.y) <= 5
+            return abs(desX - self.x) <= marginX and abs(desY - self.y) <= marginY
 
         return False
 
-    def onTopOfDestination(self, desX, desY):
-        if desX != '' and desY != '' and self.x != '' and self.y != '':
-            return abs(desX - self.x) <= 0.1 and abs(desY - self.y) <= 0.1
 
-        return False
+    def findOre(self):
+        width, height = pyautogui.size()
+        img = pyautogui.screenshot()
+        # img.save(r"C:/Users/Melvi/Desktop/shadowbot/ore.png")
+        # img =  self.changeImg(r"C:/Users/Melvi/Desktop/shadowbot/ore.png")
+
+        for x in range(200):
+            for y in range(200):
+                pX = (width / 2 - 100) + x
+                pY = (height / 2 - 100) + y
+                output = img.getpixel((pX, pY))
+                r = output[0]
+                g = output[1]
+                b = output[2]
+
+                rangePix = [
+                    [255, 255, 255], 
+                    [202, 227, 255], 
+                    [136, 154, 189],
+                    [88, 102, 126],
+                    [79, 90, 113],
+                    [115, 128, 157],
+                    [52, 57, 69],
+                    [173, 198, 245],
+                    
+                    
+
+                ]
+                
+                for i, val in enumerate(rangePix):
+                    if(r == val[0] and g == val[1] and b == val[2]):
+                        return [pX, pY]
+
+
+
+    def changeImg(self, pathToImage):
+
+        black = (0,0,0)
+        white = (255,255,255)
+        threshold = (190,190,190)
+
+        # Open input image in grayscale mode and get its pixels.
+        img = Image.open(pathToImage).convert("LA")
+        pixels = img.getdata()
+
+        newPixels = []
+
+        # Compare each pixel 
+        for pixel in pixels:
+            if pixel < threshold:
+                newPixels.append(black)
+            else:
+                newPixels.append(white)
+
+        # Create and save new image.
+        newImg = Image.new("RGB",img.size)
+        newImg.putdata(newPixels)
+        newImg.save(pathToImage)
+        return newImg
+
+
+
+
+
+
+
+
+
 
     def moveUp(self, seconds):
         self.keyboard.press(Key.space)
