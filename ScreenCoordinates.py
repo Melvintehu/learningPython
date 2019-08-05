@@ -33,15 +33,11 @@ class ScreenCoordinates:
         return normalizedCoordinates
 
     def makeCoordinateImage(self):
-        #coordinates voor thuis laptop: 5, 33, 180, 25
+        #coordinates voor thuis laptop: 5, 33, 180, 27
         #coordinates voor kantoor desktop: 0, 25, 160, 25
 
-        coordinateImg = pyautogui.screenshot(region=(5, 33, 180, 27))
-        coordinateImg.save(r"C:/Users/Melvi/Desktop/shadowbot/coordinates.png")
-        # coordinateImg = Image.open(r"C:/Users/Melvi/Desktop/shadowbot/coordinates.png")
-        # coordinateImg = coordinateImg.resize((72, 11), Image.ANTIALIAS)
-        coordinateImg.save(r"C:/Users/Melvi/Desktop/shadowbot/coordinates.png", quality=90)
-
+        coordinateImg = pyautogui.screenshot(region=(0, 25, 160, 25))
+        coordinateImg.save(r"C:/Users/Melvin Tehubijuluw/Desktop/shadowbot/coordinates.png")
         
         return coordinateImg
 

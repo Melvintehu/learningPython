@@ -26,27 +26,43 @@ class Player:
     def getPosition(self):
         self.oldX = self.x
         self.oldY = self.y
-
+        
         coordinates = self.screenCoordinates.getScreenCoordinates()
         self.x = coordinates[0]
         self.y = coordinates[1]
     
    
 
+
+    def rotate(self, desX, desY):   
+        
+        self.rotateRecursive(desX, desY)
+
+        self.mouse.release(Button.right)
+
+    def rotateRecursive(self, desX, desY):
+        self.mouse.press(Button.right)
+        angle = self.getAngle(desX, desY)
+        if(angle < 5):
+            return
+
+        if angle > 180:
+            self.rotateDegrees(abs(angle - 360), 0.01, -1)
+        else:
+            self.rotateDegrees(angle, 0.01)   
+        self.mouse.release(Button.right)
+        self.rotateRecursive(desX, desY)    
+        print('rotating recursive')
    
 
     def moveTo(self, desX, desY):
         # STAGE 1:
         # turn the player to atleast face the direction of the target coordinates
         print('Stage 1: Shadowbot is trying to face the player to the right direction')
-      
         
-        angle = self.getAngle(desX, desY)
-        print(angle)
-
-        self.turnDegrees(angle-3, 0.001)
+        self.rotate(desX, desY)
         
-        exit()
+       
         print('Stage 2: shadowbot is flying to the destination.')
         #stage 4: fly to your destination
         # fly to the destination and stop at the exact destination
@@ -54,35 +70,45 @@ class Player:
 
         while not(self.inLandingArea(desX, desY)):
             self.getPosition()
+            
             if self.inLandingArea(desX, desY):
                 print('in landing area')
                 self.keyboard.release('w')
-                break;
-
+                break
+        
         self.keyboard.release('w')
 
-        print('Stage 3: Shadowbot is making precise directions to destination.')
-        angle = self.getAngle(desX, desY)
-        self.turnDegrees(angle)
+
+        self.rotate(desX, desY)
 
 
-        
-        print('Stage 4: shadowbot is flying to the destination.')
         self.keyboard.press('w')
 
         while not(self.onTopOfDestination(desX, desY)):
             self.getPosition()
+            
             if self.onTopOfDestination(desX, desY):
                 print('in landing area')
                 self.keyboard.release('w')
-                break;
-
+                break
+        
         self.keyboard.release('w')
-        print('shadowbot has reached its destination')
 
 
+    def rotateDegrees(self, angleInDegrees, turnSpeed = 0.05, direction = 1):
+        # pixelsToTurn = (1600 / (360 * (np.pi/180))) * angleInDegrees * (np.pi/180)
+        pixelsToTurn = (1600 / 360) *  angleInDegrees
+        print(math.floor(pixelsToTurn))
+        pixelsToTurn = math.floor(pixelsToTurn)
 
-    def turnDegrees(self, angleInDegrees, turnSpeed = 0.05):
+        self.mouse.press(Button.right)
+
+        for i in range(pixelsToTurn):
+            time.sleep(turnSpeed)
+            self.mouse.move(direction * 1, 0)            
+        self.mouse.release(Button.right) 
+
+    def turnDegrees(self, angleInDegrees, turnSpeed = 0.05, direction = 1):
         pixelsToTurn = (1567 / 360) *  angleInDegrees
         print(math.floor(pixelsToTurn))
         pixelsToTurn = math.floor(pixelsToTurn)
@@ -91,7 +117,7 @@ class Player:
 
         for i in range(pixelsToTurn):
             time.sleep(turnSpeed)
-            self.mouse.move(1, 0)            
+            self.mouse.move(direction * 1, 0)            
         self.mouse.release(Button.right)            
         
 
@@ -112,7 +138,7 @@ class Player:
 
     def inLandingArea(self, desX, desY):
         if desX != '' and desY != '' and self.x != '' and self.y != '':
-            return abs(desX - self.x) <= 4 and abs(desY - self.y) <= 4
+            return abs(desX - self.x) <= 5 and abs(desY - self.y) <= 5
 
         return False
 
