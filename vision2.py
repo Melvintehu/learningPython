@@ -13,26 +13,44 @@ from matplotlib import colors
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-import Cursor from Cursor
+from CursorController import CursorController
 
 
 player = Player()
-cursor = Cursor()
+cursorController = CursorController()
 
+print('cursor to ore')
+cursorController.toOre()
+print('next to ore')
+cursorController.moveNextToOre()
+print('descending')
+player.descend()
+pyautogui.press('c')
+print('cursor to ore')
+cursorController.toOre(8) # use recursive to make sure the cursor is at the ore
+print('moving to ore')
+player.moveToOre()
+print('mining ore')
+player.mineOre() 
+print('ascending')
+player.ascend(2)
+
+# cursor = Cursor()
+     
 # time.sleep(1)
 
 # player.moveTo(51.78, 27.97)
 
 # move cursor to ore
 
-cursor.toOre()
-cursor.moveNextToOre()
-player.descend() # TODO: read movespeed
-cursor.toOre()
-player.moveToOre() # TODO: read movespeed
-player.mineOre()
-player.ascend(20)
-player.goToNextOre()
+# cursor.toOre()
+# cursor.moveNextToOre()
+# player.descend()
+# cursor.toOre()
+# player.moveToOre() # TODO: read movespeed
+# player.mineOre()
+# player.ascend(20)
+# player.goToNextOre()
 
 
 
