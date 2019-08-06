@@ -3,7 +3,8 @@ import time
 from pynput.mouse import Button, Controller
 from pynput.keyboard import Key, Controller as KeyController
 from pynput.mouse import Listener
-import pyscreenshot as ImageGrab
+
+
 mouse = Controller()
 import pyautogui
 from mpl_toolkits.mplot3d import Axes3D
@@ -12,45 +13,27 @@ from matplotlib import colors
 import matplotlib.pyplot as plt
 import numpy as np
 import cv2
-import random
+import Cursor from Cursor
+
 
 player = Player()
+cursor = Cursor()
+
 # time.sleep(1)
-  
+
 # player.moveTo(51.78, 27.97)
-# position = player.findOre()
-# mousePosition = mouse.position
-# mouse.position = (position[0], position[1])
-# mouse.click(Button.right)
-# time.sleep(2)
-# mouse.click(Button.right)
 
-position = player.findOre()
-mousePosition = mouse.position
-x = mousePosition[0] - position[0]
-y = mousePosition[1] - position[1]
-pyautogui.moveRel(-x, -y, 0.8)
-mouse.click(Button.right)
-time.sleep(3)
+# move cursor to ore
 
+cursor.toOre()
+cursor.moveNextToOre()
+player.descend() # TODO: read movespeed
+cursor.toOre()
+player.moveToOre() # TODO: read movespeed
+player.mineOre()
+player.ascend(20)
+player.goToNextOre()
 
-position = player.findOre()
-mousePosition = mouse.position
-x = mousePosition[0] - position[0]
-y = mousePosition[1] - position[1]
-pyautogui.moveRel(-x, -y, 0.5)
-mouse.click(Button.right)
-time.sleep(3)
-
-# position = player.findOre()
-# mousePosition = mouse.position
-
-# x = mousePosition[0] - position[0]
-# y = mousePosition[1] - position[1]
-
-
-# mouse.position = (x + position[0], y + position[1])
-# mouse.click(Button.right)
 
 
 # nemo = cv2.imread('./ghostore.png')

@@ -83,16 +83,17 @@ class Player:
         return False
 
 
-    def findOre(self):
+    def cursorToOre(self):
         width, height = pyautogui.size()
         img = pyautogui.screenshot()
-        img.save(r"C:/Users/Melvi/Desktop/shadowbot/ore.png")
+        img.save(r"C:/Users/Melvin Tehubijuluw/Desktop/shadowbot/ore.png")
         # img =  self.changeImg(r"C:/Users/Melvi/Desktop/shadowbot/ore.png")
+        
 
         for x in range(400):
             for y in range(height-200):
                 pX = (width / 2 - 200) + x
-                pY = y
+                pY = y + 100
                 output = img.getpixel((pX, pY))
                 r = output[0]
                 g = output[1]
@@ -100,71 +101,27 @@ class Player:
 
                 rangePix = [
                     [255, 255, 255], 
-                    [202, 227, 255], 
-                    [136, 154, 189],
-                    [88, 102, 126],
-                    [79, 90, 113],
-                    [115, 128, 157],
-                    [52, 57, 69],
-                    [173, 198, 245],
-                    [223, 228, 254],
-                    [188, 184, 197],
-                    [83, 81, 96],
-                    [193, 187, 195],
-                    [248, 239, 248],
-                    [203, 193, 199],
-                    [182, 188, 240],
-                    [201, 208, 254],
-                    [236, 246, 254],
-                    [241, 250, 254],
-                    [253, 254, 254],
-                    [215, 219, 240],
-                    [175, 180, 232],
-                    [228, 230, 253],
-                    [233, 236, 254],
-                    [132, 129, 140],
-                    [172, 166, 174],
-                    [117, 111, 121],
-                    [84, 82, 96],
-                    [82, 78, 91],
-                    [80, 77, 90],
-                    [198, 188, 193],
-                    [237, 228, 238],
-                    [232, 224, 236],
-                    [214, 216, 255],
-                    [140, 150, 199],
-                    [89, 95, 129],
-                    [93, 99, 133],
-                    [161, 167, 223],
-                    [136, 145, 194],
-                    [119, 127, 173],
-                    [124, 132, 176],
-                    [117, 122, 167],
-                    [109, 115, 158],
-                    [106, 111, 152],
-                    [100, 105, 139],
-                    [110, 113, 139],
-                    [161, 158, 185],
-                    [185, 193, 247],
-                    [93, 99, 133],
-                    [213, 225, 254],
-                    [195, 197, 240],
-                    [145, 154, 200],
-                    [224, 233, 252],
-                    [240, 240, 242],
-                    [233, 233, 254],
-                    [198, 208, 247],
-                    [220, 229, 254],
-                    [214, 224, 254],
-                    [194, 195, 240],
-                    [205, 209, 242],
-
-                    
-                    
+                    [180, 192, 247],
+                    [254, 253, 255],
+                    [196, 207, 254],
+                    [224, 234, 255],     
+                    [160, 170, 222],       
+                    [134, 142, 187],    
+                    [186, 184, 193],
+                    [248, 255, 255], 
+                    [184, 196, 250],
+                    [228, 243, 255],
+                    [219, 230, 255],   
+                    [165, 178, 230], # darker
+                    [188, 204, 254]
                 ]
                 
                 for i, val in enumerate(rangePix):
                     if(r == val[0] and g == val[1] and b == val[2]):
+                        mousePosition = self.mouse.position
+                        x = mousePosition[0] - pX
+                        y = mousePosition[1] - pY
+                        pyautogui.moveRel(-x, -y, 0.8)
                         return [pX, pY]
 
 
@@ -203,7 +160,7 @@ class Player:
 
 
 
-    def moveUp(self, seconds):
+    def ascend(self, seconds):
         self.keyboard.press(Key.space)
         time.sleep(1)
         self.keyboard.release(Key.space)
@@ -223,34 +180,21 @@ class Player:
         self.mouse.release(Button.right)
 
 
-    def moveDown(self):
-        time.sleep(2)
+    def descend(self):
+        # read current speed from UI, if currentspeed is 0% you've reached the ground
         self.mouse.press(Button.right)
         for i in range(50):
             time.sleep(0.05)
-            self.mouse.move(0, i)
-
-        self.mouse.press(Button.left)
-
-        self.getPosition()
-        time.sleep(1)
-        self.getPosition()
-        self.moveDownRecursive()
-        self.mouse.release(Button.left)
+            self.mouse.move(0, 1)
         self.mouse.release(Button.right)
-        self.keyboard.press('s')
-        print('shadowbot moving backwards to match the node')
-        time.sleep(5)
-        self.keyboard.release('s')
+        self.mouse.press(Button.right)
+        self.mouse.release(Button.right)        
 
-    def moveDownRecursive(self):
-        if abs(self.x - self.oldX) > 0.2:
-            return
+    def moveToOre():
+        self.mouse.press(Button.right)
+        self.mouse.release(Button.right)
 
-        self.getPosition()
-        self.moveDownRecursive()
-
-
-
-     
+    def mineOre(self):
+        self.mouse.press(Button.right)
+        self.mouse.release(Button.right) 
         

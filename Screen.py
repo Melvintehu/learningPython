@@ -12,6 +12,8 @@ from skimage.morphology import disk
 
 class Screen:
 
+
+    directory = "Melvin Tehubijuluw"
     def getScreenRotation(self):
         img = self.makeAngleImage()
         rotationData = pytesseract.image_to_data(img, output_type=Output.DICT)['text']
@@ -40,16 +42,16 @@ class Screen:
         #coordinates voor thuis laptop: 5, 33, 180, 27
         #coordinates voor kantoor desktop: 0, 25, 160, 25
 
-        coordinateImg = pyautogui.screenshot(region=(5, 33, 180, 27))
-        coordinateImg.save(r"C:/Users/Melvi/Desktop/shadowbot/coordinates.png")
+        coordinateImg = pyautogui.screenshot(region=(0, 25, 160, 25))
+        coordinateImg.save(r"C:/Users/Melvin Tehubijuluw/Desktop/shadowbot/coordinates.png")
         
         return coordinateImg
 
     def makeAngleImage(self):
         width, height = pyautogui.size()
-        angleImg = pyautogui.screenshot(region=(315, 30, 65, 30))
-        angleImg.save(r"C:/Users/Melvi/Desktop/shadowbot/angle.png")
-        self.changeImg(r"C:/Users/Melvi/Desktop/shadowbot/angle.png")
+        angleImg = pyautogui.screenshot(region=(315, 25, 65, 25))
+        angleImg.save(r"C:/Users/Melvin Tehubijuluw/Desktop/shadowbot/angle.png")
+        self.changeImg(r"C:/Users/Melvin Tehubijuluw/Desktop/shadowbot/angle.png")
 
         return angleImg
 
