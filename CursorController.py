@@ -10,11 +10,11 @@ import time
 
 class CursorController:
     mouse = Controller()
-    imgDir = "Melvi"
+    imgDir = "Melvin Tehubijuluw"
     def moveNextToOre(self):
         
         for i in range(40):
-            time.sleep(0.05)
+            time.sleep(0.02)
             self.mouse.move(0, 1)
 
     def toOre(self, surroundingPixelAmount = 5):
@@ -24,8 +24,8 @@ class CursorController:
         # img =  self.changeImg(r"C:/Users/Melvi/Desktop/shadowbot/ore.png")
         
 
-        for x in range(600):
-            for y in range(height-300):
+        for x in range(1000):
+            for y in range(height-500):
                 pX = (width / 2 - 300) + x
                 pY = y + 100
                 output = img.getpixel((pX, pY))
@@ -38,9 +38,11 @@ class CursorController:
                     # [248, 248, 255],
                 ]
                 
-                found = False
+                
                 for i, val in enumerate(rangePix):
-                    if(r > 240 and g > 240 and b > 240):
+                    found = False
+
+                    if(r > 210 and g > 220 and b > 240):
                         
                         for i in range(surroundingPixelAmount):
                             surroundingPixel = img.getpixel((pX + i, pY + i))
@@ -49,16 +51,19 @@ class CursorController:
                             sB = surroundingPixel[2]
                             print(sR, sG, sB)
                             if(sR < 220 and sG < 220 and sB < 240 ):
-                                found = False    
+                                found = False
+                                continue   
                             else:
                                 found = True
 
-                        mousePosition = self.mouse.position
-                        x = mousePosition[0] - pX
-                        y = mousePosition[1] - pY
-                        pyautogui.moveRel(-x, -y, 0.3)
-                        return [pX, pY]         
+                        if found:
 
+                            mousePosition = self.mouse.position
+                            x = mousePosition[0] - pX
+                            y = mousePosition[1] - pY
+                            pyautogui.moveRel(-x, -y, 0.3)
+                            return found         
+        return False
                        
 
     def changeImg(self, pathToImage):
@@ -85,3 +90,28 @@ class CursorController:
         newImg.putdata(newPixels)
         newImg.save(pathToImage)
         return newImg
+
+
+    def zoomIn(self):
+        for i in range(30):
+            pyautogui.scroll(10)
+        time.sleep(0.5)
+
+    def zoomOut(self):
+        for i in range(30):
+            pyautogui.scroll(-10)
+        time.sleep(0.5)
+
+    def lookDown(self):
+        self.mouse.press(Button.right)
+        for i in range(35):
+            time.sleep(0.05)
+            self.mouse.move(0, i)
+        self.mouse.release(Button.right) 
+
+    def lookStraight(self):
+        self.mouse.press(Button.right)
+        for i in range(35):
+            time.sleep(0.05)
+            self.mouse.move(0, -i)
+        self.mouse.release(Button.right) 

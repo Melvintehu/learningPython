@@ -3,7 +3,7 @@ import time
 from pynput.mouse import Button, Controller
 from pynput.keyboard import Key, Controller as KeyController
 from pynput.mouse import Listener
-
+import random
 
 mouse = Controller()
 import pyautogui
@@ -14,56 +14,17 @@ import matplotlib.pyplot as plt
 import numpy as np
 import cv2
 from CursorController import CursorController
-
+from GhostIronOre import GhostIronOre
 
 player = Player()
-cursorController = CursorController()
+ghostIronOre = GhostIronOre()
+random.shuffle(ghostIronOre.nodes)
 
-player.moveTo(42.79, 43.30)
+for i, val in enumerate(ghostIronOre.nodes):
+    print('current destination: ', val)
+    result = player.getOre(val[0], val[1])
 
-time.sleep(1)
-
-mouse.press(Button.right)
-for i in range(50):
-    time.sleep(0.05)
-    mouse.move(0, i)
-mouse.release(Button.right)    
-
-time.sleep(1)
-print('cursor to ore')
-cursorController.toOre()
-print('next to ore')
-cursorController.moveNextToOre()
-print('descending')
-player.descend()
-pyautogui.press('c')
-print('cursor to ore')
-cursorController.toOre(8) # use recu/rsive to make sure the cursor is at the ore
-print('moving to ore')
-player.moveToOre()
-print('mining ore')
-player.mineOre() 
-print('ascending')
-player.ascend(4)
-
-# cursor = Cursor()
-     
-# time.sleep(1)
-
-# player.moveTo(51.78, 27.97)
-
-# move cursor to ore
-
-# cursor.toOre()
-# cursor.moveNextToOre()
-# player.descend()
-# cursor.toOre()
-# player.moveToOre() # TODO: read movespeed
-# player.mineOre()
-# player.ascend(20)
-# player.goToNextOre()
-
-
+print(result)
 
 # nemo = cv2.imread('./ghostore.png')
 # nemo = cv2.cvtColor(nemo, cv2.COLOR_BGR2RGB)

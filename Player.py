@@ -14,12 +14,16 @@ from skimage.morphology import disk
 
 # custom classes
 from Screen import Screen
+from CursorController import CursorController
+
 
 class Player:
     
     mouse = Controller()
     keyboard = KeyController()
+    cursorController = CursorController()
 
+    
     oldX = 0
     oldY = 0
     x = 0
@@ -34,6 +38,7 @@ class Player:
         self.oldY = self.y
         
         coordinates = self.screen.getScreenCoordinates()
+        print(coordinates, 'getPosition')
         self.x = coordinates[0]
         self.y = coordinates[1]
     
@@ -44,8 +49,7 @@ class Player:
         AN = self.getRotation()
         AD = self.getAngle(desX, desY)
         
-        
-
+        print(AN, AD)
 
         if AN + AD > 360:
             angle = math.ceil((AN + AD) - 360)
@@ -56,9 +60,6 @@ class Player:
 
 
     def moveTo(self, desX, desY):
-        
-        
-
 
         while True:    
             if(self.inLandingArea(desX, desY, 1.5, 1.5)):
@@ -69,23 +70,26 @@ class Player:
             self.rotateDegrees(angle, desX, desY)
             self.keyboard.press('w')
             print(angle)
-            for i in range(24):
-                time.sleep(0.125)
-                if(self.inLandingArea(desX, desY, 1.5, 1.5)):
-                    self.keyboard.release('w')
-                    return
-            self.keyboard.release('w')            
 
             
+            for i in range(24):
+                time.sleep(0.125)
+                self.getPosition()
+
+
+                print(self.inLandingArea(desX, desY, 1.0, 1.0), 'test')
+                if(self.inLandingArea(desX, desY, 1.0, 1.0)):
+                    self.keyboard.release('w')
+                    return
+            self.keyboard.release('w')                
         
 
-    def rotateDegrees(self, angle, desX, desY, turnSpeed = 0.01):
+    def rotateDegrees(self, angle, desX, desY, turnSpeed = 0.005):
         direction = 1
 
         if angle[1] < 0:
             direction = -1
-
-        print('turning')
+        
         self.mouse.press(Button.right)
         
         for i in range(abs(math.floor((1600 / 360) * angle[1]))):
@@ -146,7 +150,7 @@ class Player:
 
     def ascend(self, seconds):
         pyautogui.press('c')
-        time.sleep(1.5)
+        time.sleep(2)
 
         self.keyboard.press(Key.space)
         time.sleep(seconds)
@@ -155,19 +159,21 @@ class Player:
 
 
     def descend(self):
-        # read current speed from UI, if currentspeed is 0% you've reached the ground
-       
-
         self.mouse.click(Button.right)
-        time.sleep(0.5)
+        
         while True:
-            time.sleep(0.5)   
+            time.sleep(0.7)   
 
             if(self.getSpeed() == 0):
+                pyautogui.press('c')
+                time.sleep(1.5)
                 return
 
 
     def moveToOre(self):
+        time.sleep(0.5)
+        self.cursorController.toOre(8)
+        time.sleep(0.5)
         self.mouse.click(Button.right)
         while True:
             time.sleep(1)   
@@ -176,9 +182,39 @@ class Player:
                 return
 
     def mineOre(self):
-        time.sleep(1)
+        time.sleep(0.5)
+        self.cursorController.toOre(8)
+        time.sleep(0.5)
         self.mouse.click(Button.right)
         time.sleep(3.5)
 
     def getSpeed(self):
         return self.screen.getPlayerSpeed()
+
+
+    def getOre(self, desX, desY):
+        self.cursorController.zoomIn()
+        self.moveTo(desX, desY)
+        time.sleep(0.1)
+        self.cursorController.lookDown()
+        time.sleep(0.1)
+        result = self.cursorController.toOre()
+
+        if result:
+            time.sleep(0.1)
+            self.cursorController.moveNextToOre()
+            time.sleep(0.1)
+            self.descend()
+            self.cursorController.zoomOut()
+            time.sleep(0.1)
+            self.moveToOre()
+            time.sleep(0.1)
+            self.moveToOre() 
+            time.sleep(0.5)
+            self.ascend(5)
+    
+        self.cursorController.lookStraight()
+        # if not(result):
+        #     self.cursorController.zoomOut()
+
+        return True

@@ -9,21 +9,26 @@ import pyautogui
 import numpy as np
 from skimage.morphology import opening
 from skimage.morphology import disk
+import time
 
 class Screen:
 
 
-    dir = "Melvi"
+    dir = "Melvin Tehubijuluw"
 
     def getScreenRotation(self):
         img = self.makeAngleImage()
         rotationData = pytesseract.image_to_data(img, output_type=Output.DICT, \
            config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')['text']
         
-        print(rotationData)
-
+        print(rotationData, 'getScreenRotation')
         if len(rotationData) == 1:
-            return 0
+            pyautogui.keyDown('d')
+            time.sleep(0.1)
+            pyautogui.keyUp('d')
+
+            return self.getScreenRotation()
+
 
         return int(rotationData[-1])
 
@@ -35,28 +40,33 @@ class Screen:
         if len(speedData) > 1:
             speedData = self.removeDiscrepanties(speedData)
             return int(speedData[-1])
-        return 0
+        return 420
 
     def getScreenCoordinates(self):
         img = self.makeCoordinateImage()
         coordinateData = pytesseract.image_to_data(img, output_type=Output.DICT, \
            config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789.,')['text']
         
-        return self.normalizeCoordinates(coordinateData)
+        print(coordinateData, 'getScreenCoordinates')
+        if len(coordinateData) > 1:
+            coordinates = coordinateData[-1].split(',')
+            if len(coordinates) > 1:
+                return self.normalizeCoordinates(coordinates)
+        return [0, 0]
 
     def normalizeCoordinates(self, coordinates):
-        coordinates = coordinates[-1].split(',')
         
+        print(coordinates, 'normalize coordinates')
         for index, val in enumerate(coordinates):
             coordinates[index] = float(val)
 
         return coordinates
 
     def makeCoordinateImage(self):
-        #coordinates voor thuis laptop: 5, 33, 180, 27
+        #coordinates voor thuis laptop: 5, 4, 185, 27
         #coordinates voor kantoor desktop: 0, 25, 160, 25
 
-        coordinateImg = pyautogui.screenshot(region=(5, 4, 185, 27))
+        coordinateImg = pyautogui.screenshot(region=(0, 3, 170, 27))
         
         coordinateImg.save(r"C:/Users/{}/Desktop/shadowbot/coordinates.png".format(self.dir))
         
@@ -64,14 +74,14 @@ class Screen:
 
     def makeAngleImage(self):
 
-        angleImg = pyautogui.screenshot(region=(335, 3, 70, 28))
+        angleImg = pyautogui.screenshot(region=(215, 3, 70, 28))
         angleImg.save(r"C:/Users/{}/Desktop/shadowbot/angle.png".format(self.dir))
         self.changeImg(r"C:/Users/{}/Desktop/shadowbot/angle.png".format(self.dir))
 
         return angleImg
 
     def makePlayerSpeedImage(self):
-        img = pyautogui.screenshot(region=(555, 2, 65, 30))
+        img = pyautogui.screenshot(region=(305, 0, 565, 30))
         img.save(r"C:/Users/{}/Desktop/shadowbot/speed.png".format(self.dir))
         img = self.changeImg(r"C:/Users/{}/Desktop/shadowbot/speed.png".format(self.dir))
 
