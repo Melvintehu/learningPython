@@ -19,6 +19,17 @@ from CursorController import CursorController
 player = Player()
 cursorController = CursorController()
 
+player.moveTo(42.79, 43.30)
+
+time.sleep(1)
+
+mouse.press(Button.right)
+for i in range(50):
+    time.sleep(0.05)
+    mouse.move(0, i)
+mouse.release(Button.right)    
+
+time.sleep(1)
 print('cursor to ore')
 cursorController.toOre()
 print('next to ore')
@@ -27,13 +38,13 @@ print('descending')
 player.descend()
 pyautogui.press('c')
 print('cursor to ore')
-cursorController.toOre(8) # use recursive to make sure the cursor is at the ore
+cursorController.toOre(8) # use recu/rsive to make sure the cursor is at the ore
 print('moving to ore')
 player.moveToOre()
 print('mining ore')
 player.mineOre() 
 print('ascending')
-player.ascend(2)
+player.ascend(4)
 
 # cursor = Cursor()
      

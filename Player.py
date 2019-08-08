@@ -43,28 +43,62 @@ class Player:
     def getRotationToTarget(self, desX, desY):
         AN = self.getRotation()
         AD = self.getAngle(desX, desY)
-        print(AN, AD)
-        exit()
-        return AD - (360 - AN) 
-    
-
-    def moveTo(self, desX, desY):
-        AN = self.getRotationToTarget(desX, desY)
+        
         
 
 
-    def rotateDegrees(self, angleInDegrees, turnSpeed = 0.05, direction = 1):
-        self.mouse.press(Button.right)
+        if AN + AD > 360:
+            angle = math.ceil((AN + AD) - 360)
+        else:
+            angle = math.ceil(AN + AD)
 
-        for i in range(math.floor((1600 / 360) *  angleInDegrees)):
+        return [angle, (360 - AD) * -1] if AD > 180 else [angle, AD]
+
+
+    def moveTo(self, desX, desY):
+        
+        
+
+
+        while True:    
+            if(self.inLandingArea(desX, desY, 1.5, 1.5)):
+                self.keyboard.release('w')
+                return
+                
+            angle = self.getRotationToTarget(desX, desY)
+            self.rotateDegrees(angle, desX, desY)
+            self.keyboard.press('w')
+            print(angle)
+            for i in range(24):
+                time.sleep(0.125)
+                if(self.inLandingArea(desX, desY, 1.5, 1.5)):
+                    self.keyboard.release('w')
+                    return
+            self.keyboard.release('w')            
+
+            
+        
+
+    def rotateDegrees(self, angle, desX, desY, turnSpeed = 0.01):
+        direction = 1
+
+        if angle[1] < 0:
+            direction = -1
+
+        print('turning')
+        self.mouse.press(Button.right)
+        
+        for i in range(abs(math.floor((1600 / 360) * angle[1]))):
             time.sleep(turnSpeed)
-            self.mouse.move(direction * 1, 0)            
+            self.mouse.move(direction * 1, 0)   
+
+        time.sleep(1)         
         self.mouse.release(Button.right) 
 
     def getAngle(self, desX, desY):
         self.getPosition()
         self.keyboard.press('s')
-        time.sleep(1.5)
+        time.sleep(1)
         self.keyboard.release('s')    
         self.getPosition()
 

@@ -17,10 +17,14 @@ class Screen:
 
     def getScreenRotation(self):
         img = self.makeAngleImage()
-        rotationData = pytesseract.image_to_data(img, output_type=Output.DICT)['text']
-       
-        rotationData = self.removeDiscrepanties(rotationData)
+        rotationData = pytesseract.image_to_data(img, output_type=Output.DICT, \
+           config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789')['text']
         
+        print(rotationData)
+
+        if len(rotationData) == 1:
+            return 0
+
         return int(rotationData[-1])
 
     def getPlayerSpeed(self):
@@ -37,7 +41,6 @@ class Screen:
         img = self.makeCoordinateImage()
         coordinateData = pytesseract.image_to_data(img, output_type=Output.DICT, \
            config='--psm 10 --oem 3 -c tessedit_char_whitelist=0123456789.,')['text']
-
         
         return self.normalizeCoordinates(coordinateData)
 
@@ -53,7 +56,7 @@ class Screen:
         #coordinates voor thuis laptop: 5, 33, 180, 27
         #coordinates voor kantoor desktop: 0, 25, 160, 25
 
-        coordinateImg = pyautogui.screenshot(region=(5, 33, 180, 27))
+        coordinateImg = pyautogui.screenshot(region=(5, 4, 185, 27))
         
         coordinateImg.save(r"C:/Users/{}/Desktop/shadowbot/coordinates.png".format(self.dir))
         
@@ -61,7 +64,7 @@ class Screen:
 
     def makeAngleImage(self):
 
-        angleImg = pyautogui.screenshot(region=(315, 30, 65, 27))
+        angleImg = pyautogui.screenshot(region=(335, 3, 70, 28))
         angleImg.save(r"C:/Users/{}/Desktop/shadowbot/angle.png".format(self.dir))
         self.changeImg(r"C:/Users/{}/Desktop/shadowbot/angle.png".format(self.dir))
 
